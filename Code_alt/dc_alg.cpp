@@ -333,7 +333,6 @@ arma::mat dc_rec(Subvector& subd, Subvector& d, const int rec_depth, double& ref
   // the index of the last element, that couldn't be deflated
   int last_filled;
   arma::uvec perm = deflate(d, b, last_filled, refval);
-  //std::cout << "permutation" << perm.t() << '\n';
 
   // meat and potatoes----------------------------------------------------------
   // portait the reduced system
@@ -345,18 +344,7 @@ arma::mat dc_rec(Subvector& subd, Subvector& d, const int rec_depth, double& ref
   Subvector d_defl = d.subvector(0, last_filled);
   std::vector<double> unst_diff(last_filled + 1);
   // time to find the eigenvalues and eigenvectors
-  //--------------------------------------------------------------
-  /*
-  std::cout << "b" << '\n';
-  print_vec2(b_cp);
-  std::cout << "d" << '\n';
-  print_vec2(d_defl);
-  std::cout << "rho: " << ats[0] * ats[1] << ", rec_depth: " << rec_depth << '\n';
-  */
-  //--------------------------------------------------------------
   sec::calc_roots(b_cp, d_defl, evals, ats[0] * ats[1], unst_diff);
-  //std::cout << "calc_roots rec: " << rec_depth << '\n';
-  //print_vec2(evals);
   // roots (eigenvalues) are now computed
   // for stability of the eigenvectors we recompute the non-zero
   // components of the vector b with respect to our computed eigenvalues
@@ -381,10 +369,7 @@ arma::mat dc_rec(Subvector& subd, Subvector& d, const int rec_depth, double& ref
   // and the columns of Q according to Q and then return the product Q*Q_prime
   Q = Q.cols(perm);
   //Q_prime = Q_prime.cols(perm2);
-  //std::cout << Q << '\n';
-  //std::cout << Q_prime << '\n';
   // this is the most expensive step in the algorithm and sadly can't be avoided
-  //std::cout << "hello" << '\n';
   Q.submat(0, 0, Q.n_rows - 1, last_filled) = Q.submat(0, 0, Q.n_rows - 1, last_filled) * Q_prime.submat(0, 0, last_filled, last_filled);
   //Q = Q.cols(perm2);
   return Q.cols(perm2);
